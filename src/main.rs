@@ -18,22 +18,28 @@ impl Config {
         Self {
             search_string: match args.get(1) {
                 Some(s) => s.to_string(),
-                None => panic!("Cannot find the word"),
+                None => {
+                    println!("Cannot find the word");
+                    process::exit(3);
+                }
             },
             filename: match args.get(2) {
                 Some(f) => f.to_string(),
-                None => panic!("Cannot find file"),
+                None => {
+                    println!("Cannot find file");
+                    process::exit(4);
+                }
             },
         }
     }
 }
 
-fn run(input: &Config) {
+fn run(input: &Config) -> String {
     let contents = fs::read_to_string(&input.filename).unwrap_or_else(|err| {
         println!("{}", err);
         process::exit(2);
     });
-    println!("{}", contents);
+    return contents;
 }
 
 fn main() {
