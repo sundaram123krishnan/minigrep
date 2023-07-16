@@ -1,3 +1,4 @@
+use colored::Colorize;
 use std::{env, fs, process};
 
 fn check_args_length(arguments: &Vec<String>) -> Result<i32, String> {
@@ -8,6 +9,7 @@ fn check_args_length(arguments: &Vec<String>) -> Result<i32, String> {
     }
 }
 
+#[allow(dead_code)]
 struct Config {
     search_string: String,
     filename: String,
@@ -19,14 +21,16 @@ impl Config {
             search_string: match args.get(1) {
                 Some(s) => s.to_string(),
                 None => {
-                    println!("Cannot find the word");
+                    let value = format!("Cannot find the word");
+                    println!("{}", value.bold().red());
                     process::exit(3);
                 }
             },
             filename: match args.get(2) {
                 Some(f) => f.to_string(),
                 None => {
-                    println!("Cannot find file");
+                    let value = format!("Cannot find file");
+                    println!("{}", value.bold().red());
                     process::exit(4);
                 }
             },
@@ -36,7 +40,8 @@ impl Config {
 
 fn run(input: &Config) -> String {
     let contents = fs::read_to_string(&input.filename).unwrap_or_else(|err| {
-        println!("{}", err);
+        let value = format!("{}", err);
+        println!("{}", value.bold().red());
         process::exit(2);
     });
     return contents;
@@ -46,7 +51,8 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     check_args_length(&args).unwrap_or_else(|err| {
-        println!("Problem parsing arguments: {}", err);
+        let value = format!("Problem parsing arguments: {}", err);
+        println!("{}", value.bold().red());
         process::exit(1);
     });
 
