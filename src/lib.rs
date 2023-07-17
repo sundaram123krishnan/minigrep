@@ -1,4 +1,4 @@
-use colored::Colorize;
+use colorful::Colorful;
 use std::{fs, process};
 
 pub fn check_args_length(arguments: &Vec<String>) -> Result<i32, String> {
@@ -8,8 +8,6 @@ pub fn check_args_length(arguments: &Vec<String>) -> Result<i32, String> {
         Err(String::from("2 arguments are expected"))
     }
 }
-
-#[allow(dead_code)]
 
 pub struct Config {
     pub search_string: String,
@@ -39,15 +37,25 @@ impl Config {
     }
 }
 
-pub fn run(input: &Config) -> String {
-    let contents = fs::read_to_string(&input.filename).unwrap_or_else(|err| {
-        let value = format!("{}", err);
-        println!("{}", value.bold().red());
-        process::exit(2);
-    });
-    return contents;
+pub fn run_insensitive(input: &Config) -> Vec<String> {
+    let contents = fs::read_to_string(&input.filename).unwrap();
+    let mut result = Vec::new();
+    for line in case_insensitive_search(&contents, &input.search_string) {
+        let value = format!("{}", line);
+        result.push(value);
+    }
+    return result;
 }
 
+pub fn run_sensitive(input: &Config) -> Vec<String> {
+    let contents = fs::read_to_string(&input.filename).unwrap();
+    let mut result = Vec::new();
+    for line in search(&contents, &input.search_string) {
+        let value = format!("{}", line);
+        result.push(value);
+    }
+    return result;
+}
 pub fn word_list<'a>(words: &'a str) -> Vec<&'a str> {
     let mut v: Vec<&str> = Vec::new();
     for i in words.split_whitespace() {
@@ -55,14 +63,31 @@ pub fn word_list<'a>(words: &'a str) -> Vec<&'a str> {
     }
     v
 }
-pub fn search<'a>(word_list: &'a Vec<&str>, word: &'a String) -> Vec<&'a str> {
-    let mut ok = false;
-    let mut result: Vec<&str> = Vec::new();
-    for i in word_list {
+
+pub fn search<'a>(word_list: &'a str, word: &'a String) -> Vec<&'a str> {
+    let mut ok: bool = false;
+    let mut result = Vec::new();
+    for i in word_list.lines() {
         if i.contains(word) {
             ok = true;
-            let value = format!("{}", i);
-            println!("{}", value.bold().yellow());
+            result.push(i);
+        }
+    }
+    if ok == false {
+        let value = format!("Oops! No word found");
+        println!("{}", value.bold().red());
+    }
+    result
+}
+pub fn case_insensitive_search<'a>(word_list: &'a str, word: &'a String) -> Vec<&'a str> {
+    let mut ok: bool = false;
+    let mut result = Vec::new();
+    let temp_word = word.to_lowercase();
+
+    for i in word_list.lines() {
+        let temp = i.to_lowercase();
+        if temp.contains(&temp_word) {
+            ok = true;
             result.push(i);
         }
     }
@@ -81,8 +106,8 @@ mod tests {
     #[test]
     fn result() {
         let query = "lo".to_string();
-        let contents = vec!["hello", "world", "i", "love", "this", "world"];
-        let res = search(&contents, &query);
-        assert_eq!(res, vec!["hello", "love"]);
+        let content = "Hello how are you i hope you are good";
+        let res = search(&content, &query);
+        assert_eq!(res, vec!["Hello how are you i hope you are good"]);
     }
 }
