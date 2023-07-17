@@ -7,3 +7,5 @@ edition = "2021"
 
 [dependencies]
 colored = " 2.0.4"
+colorful = "0.2.2"
+prettytable-rs = "^0.10"
