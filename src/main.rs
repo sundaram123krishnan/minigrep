@@ -19,12 +19,6 @@ fn main() {
     let mut sensitive_word = String::new();
     let mut insensitive_word = String::new();
 
-    if sensitive_word.len() == 0 && insensitive_word.len() == 0 {
-        let display = format!("Oops! no matching results found");
-        println!("{}", display.red().bold());
-        process::exit(5);
-    }
-
     for i in &val {
         sensitive_word.push_str(i.as_str());
         sensitive_word.push('\n');
@@ -33,6 +27,29 @@ fn main() {
         insensitive_word.push_str(i.as_str());
         insensitive_word.push('\n');
     }
+    if sensitive_word.len() == 0 && insensitive_word.len() == 0 {
+        let display = format!("Oops! no matching results found");
+        println!("{}", display.red().bold());
+        process::exit(5);
+    }
+    if sensitive_word.len() == 0 {
+        let table = prettytable::table! (
+            [bFY -> "RESULTS"],
+            [bFC -> insensitive_word]
+        );
+        table.printstd();
+        process::exit(4);
+    }
+
+    if insensitive_word.len() == 0 {
+        let table = prettytable::table! (
+            [bFY -> "RESULTS"],
+            [bFC -> sensitive_word]
+        );
+        table.printstd();
+        process::exit(4);
+    }
+
     if sensitive_word == insensitive_word {
         let table = prettytable::table! (
             [bFY -> "RESULTS"],
@@ -41,7 +58,9 @@ fn main() {
         table.printstd();
         process::exit(4);
     }
+
     let table = prettytable::table!(
+
         [
             "CASE SENSITIVE RESULTS".gradient(Color::Green).bold(),
             "CASE INSENSITIVE RESULTS".gradient(Color::Green).bold()
