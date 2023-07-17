@@ -8,7 +8,8 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     check_args_length(&args).unwrap_or_else(|err| {
-        let _value = format!("Problem parsing arguments: {}", err);
+        let value = format!("Problem parsing arguments: {}", err);
+        println!("{}", value.red().bold());
         process::exit(1);
     });
 
@@ -17,6 +18,13 @@ fn main() {
     let val1 = run_insensitive(&input);
     let mut sensitive_word = String::new();
     let mut insensitive_word = String::new();
+
+    if sensitive_word.len() == 0 && insensitive_word.len() == 0 {
+        let display = format!("Oops! no matching results found");
+        println!("{}", display.red().bold());
+        process::exit(5);
+    }
+
     for i in &val {
         sensitive_word.push_str(i.as_str());
         sensitive_word.push('\n');

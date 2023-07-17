@@ -65,35 +65,23 @@ pub fn word_list<'a>(words: &'a str) -> Vec<&'a str> {
 }
 
 pub fn search<'a>(word_list: &'a str, word: &'a String) -> Vec<&'a str> {
-    let mut ok: bool = false;
     let mut result = Vec::new();
     for i in word_list.lines() {
         if i.contains(word) {
-            ok = true;
             result.push(i);
         }
-    }
-    if ok == false {
-        let value = format!("Oops! No word found");
-        println!("{}", value.bold().red());
     }
     result
 }
 pub fn case_insensitive_search<'a>(word_list: &'a str, word: &'a String) -> Vec<&'a str> {
-    let mut ok: bool = false;
     let mut result = Vec::new();
     let temp_word = word.to_lowercase();
 
     for i in word_list.lines() {
         let temp = i.to_lowercase();
         if temp.contains(&temp_word) {
-            ok = true;
             result.push(i);
         }
-    }
-    if ok == false {
-        let value = format!("Oops! No word found");
-        println!("{}", value.bold().red());
     }
     result
 }
