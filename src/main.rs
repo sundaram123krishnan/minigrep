@@ -1,51 +1,6 @@
 use colored::Colorize;
-use std::{env, fs, process};
-
-fn check_args_length(arguments: &Vec<String>) -> Result<i32, String> {
-    if arguments.len() == 3 {
-        Ok(arguments.len() as i32)
-    } else {
-        Err(String::from("2 arguments are expected"))
-    }
-}
-
-#[allow(dead_code)]
-struct Config {
-    search_string: String,
-    filename: String,
-}
-
-impl Config {
-    fn input_parse(args: &Vec<String>) -> Self {
-        Self {
-            search_string: match args.get(1) {
-                Some(s) => s.to_string(),
-                None => {
-                    let value = format!("Cannot find the word");
-                    println!("{}", value.bold().red());
-                    process::exit(3);
-                }
-            },
-            filename: match args.get(2) {
-                Some(f) => f.to_string(),
-                None => {
-                    let value = format!("Cannot find file");
-                    println!("{}", value.bold().red());
-                    process::exit(4);
-                }
-            },
-        }
-    }
-}
-
-fn run(input: &Config) -> String {
-    let contents = fs::read_to_string(&input.filename).unwrap_or_else(|err| {
-        let value = format!("{}", err);
-        println!("{}", value.bold().red());
-        process::exit(2);
-    });
-    return contents;
-}
+use minigrep::{check_args_length, run, search, word_list, Config};
+use std::{env, process};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -57,5 +12,7 @@ fn main() {
     });
 
     let input = Config::input_parse(&args);
-    run(&input);
+    let contents = run(&input);
+    let v = word_list(&contents);
+    search(&v, &input.search_string);
 }
