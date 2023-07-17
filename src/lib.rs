@@ -38,7 +38,11 @@ impl Config {
 }
 
 pub fn run_insensitive(input: &Config) -> Vec<String> {
-    let contents = fs::read_to_string(&input.filename).unwrap();
+    let contents = fs::read_to_string(&input.filename).unwrap_or_else(|err| {
+        let value = format!("File error : {}", err);
+        println!("{}", value.red().bold());
+        process::exit(5);
+    });
     let mut result = Vec::new();
     for line in case_insensitive_search(&contents, &input.search_string) {
         let value = format!("{}", line);
@@ -48,7 +52,11 @@ pub fn run_insensitive(input: &Config) -> Vec<String> {
 }
 
 pub fn run_sensitive(input: &Config) -> Vec<String> {
-    let contents = fs::read_to_string(&input.filename).unwrap();
+    let contents = fs::read_to_string(&input.filename).unwrap_or_else(|err| {
+        let value = format!("File error : {}", err);
+        println!("{}", value.red().bold());
+        process::exit(5);
+    });
     let mut result = Vec::new();
     for line in search(&contents, &input.search_string) {
         let value = format!("{}", line);
