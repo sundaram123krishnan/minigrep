@@ -1,4 +1,7 @@
+use colorful::{Color, Colorful};
+
 use minigrep::{check_args_length, run_insensitive, run_sensitive, Config};
+
 use std::{env, process};
 
 fn main() {
@@ -10,8 +13,8 @@ fn main() {
     });
 
     let input = Config::input_parse(&args);
-    let val = run_insensitive(&input);
-    let val1 = run_sensitive(&input);
+    let val = run_sensitive(&input);
+    let val1 = run_insensitive(&input);
     let mut sensitive_word = String::new();
     let mut insensitive_word = String::new();
     for i in &val {
@@ -31,8 +34,11 @@ fn main() {
         process::exit(4);
     }
     let table = prettytable::table!(
-        [bFY -> "CASE SENSITIVE RESULTS", bFY->"CASE INSENSITIVE RESULTS"],
-        [bFC -> sensitive_word, bFC -> insensitive_word]
+        [
+            "CASE SENSITIVE RESULTS".gradient(Color::Green).bold(),
+            "CASE INSENSITIVE RESULTS".gradient(Color::Green).bold()
+        ],
+        [bFC ->sensitive_word, bFC -> insensitive_word]
     );
     table.printstd();
 }
