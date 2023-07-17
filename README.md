@@ -1,2 +1,2 @@
 # minigrep
-![](https://github.com/sundaram123krishnan/minigrep/blob/master/tty.gif)
+![demo video](https://github.com/sundaram123krishnan/minigrep/blob/master/tty.gif)
